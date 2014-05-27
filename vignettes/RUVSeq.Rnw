@@ -1,0 +1,286 @@
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{RUVSeq: Remove Unwanted Variation from RNA-Seq Data}
+
+\documentclass{article}
+
+<<style-knitr, eval=TRUE, echo=FALSE, results="asis">>=
+BiocStyle::latex()
+@
+
+\usepackage{times}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{subfig}
+\usepackage{amsmath}
+
+\title{\Biocpkg{RUVSeq}: Remove Unwanted Variation from RNA-Seq Data}
+\author{Davide Risso}
+\date{Modified: April 13, 2014.  Compiled: \today.}
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Overview}
+
+In this document, we show how to conduct a differential expression (DE) analysis that controls for ``unwanted variation'', e.g., batch, library preparation, and other nuisance effects, using the between-sample normalization methods proposed in \cite{risso2013ruv}. We call this approach \Biocpkg{RUVSeq} for \emph{remove unwanted variation from RNA-Seq data}.
+
+Briefly, \Biocpkg{RUVSeq} works as follows. For $n$ samples and $J$ genes, consider the following generalized linear model (GLM), where the RNA-Seq read counts are regressed on both the known covariates of interest and unknown factors of unwanted variation, 
+
+\begin{equation}\label{eq1}
+\log E[Y | W, X, O] = W \alpha + X \beta + O.
+\end{equation}
+Here, $Y$ is the $n \times J$ matrix of observed gene-level read counts, $W$ is an $n \times k$ matrix corresponding to the factors of ``unwanted variation'' and $\alpha$ its associated $k \times J$ matrix of nuisance parameters, $X$ is an $n \times p$ matrix corresponding to the $p$ covariates of interest/factors of ``wanted variation'' (e.g., treatment effect) and $\beta$ its associated $p \times J$ matrix of parameters of interest, and $O$ is an $n \times J$ matrix of offsets that can either be set to zero or estimated with some other normalization procedure (such as upper-quartile normalization).  
+
+The matrix $X$ is a random variable, assumed to be known a priori. For instance, in the usual two-class comparison setting (e.g., treated vs. control samples), $X$ is an $n \times 2$ design matrix with a column of ones corresponding to an intercept and a column of indicator variables for the class of each sample (e.g., 0 for control and 1 for treated) \cite{mccullough1989generalized}. The matrix $W$ is an unobserved random variable and $\alpha$, $\beta$, and $k$ are unknown
+parameters.  
+
+The simultaneous estimation of $W$, $\alpha$, $\beta$, and $k$ is infeasible. For a given $k$, we consider instead the following three approaches to estimate the factors of unwanted variation $W$:
+\begin{itemize}
+\item \Rfunction{RUVg} uses negative control genes, assumed to have constant expression across samples;
+\item \Rfunction{RUVs} uses centered (technical) replicate/negative control samples for which the covariates of interest are constant; 
+\item \Rfunction{RUVr} uses residuals, e.g., from a first-pass GLM regression of the counts on the covariates of interest.
+  \end{itemize}
+
+The resulting estimate of $W$ can then be plugged into Equation \eqref{eq1}, for the full set of genes and samples, and $\alpha$ and $\beta$ estimated by GLM regression. Normalized read counts can be obtained as residuals from
+  ordinary least squares (OLS) regression of $\log Y - O$ on the estimated $W$.
+    
+Note that although here we illustrate the RUV approach using the GLM implementation of \Biocpkg{edgeR}, all three RUV versions can be readily adapted to work with any DE method formulated within a GLM framework, e.g., \Biocpkg{DESeq}, \Biocpkg{DESeq2}.
+
+See \cite{risso2013ruv} for full details and algorithms for each of the
+three RUV procedures.
+
+\section{A typical differential expression analysis workflow}
+
+In this section, we consider the \Rfunction{RUVg} function to estimate the factors of unwanted variation using control genes. See Sections \ref{sec:replicate} and \ref{sec:residuals}, respectively, for examples using the \Rfunction{RUVs} and \Rfunction{RUVr} approaches.
+
+We consider the zebrafish dataset of \cite{ferreira2013silencing}, available through the \Bioconductor{} package \Biocpkg{zebrafishRNASeq}. The data correspond to RNA libraries for three pairs of gallein-treated and control embryonic zebrafish cell pools. For each of the 6 samples, we have RNA-Seq read counts for $32{,}469$ Ensembl genes and $92$ ERCC spike-in sequences. See
+\cite{risso2013ruv} and the \Biocpkg{zebrafishRNASeq} package vignette
+for details.
+
+<<setup, echo=FALSE>>=
+library(knitr)
+opts_chunk$set(dev="pdf", fig.align="center", cache=TRUE, message=FALSE, out.width=".49\\textwidth", echo=TRUE, results="markup", fig.show="hold")
+options(width=60)
+@
+
+<<data>>=
+library(RUVSeq)
+library(zebrafishRNASeq)
+data(zfGenes)
+head(zfGenes)
+tail(zfGenes)
+@ 
+
+\subsection{Filtering and exploratory data analysis}
+
+We filter out non-expressed genes, by requiring more than 5 reads
+in at least two samples for each gene.
+
+<<filter>>=
+filter <- apply(zfGenes, 1, function(x) length(x[x>5])>=2)
+filtered <- zfGenes[filter,]
+genes <- rownames(filtered)[grep("^ENS", rownames(filtered))]
+spikes <- rownames(filtered)[grep("^ERCC", rownames(filtered))]
+@ 
+
+After the filtering, we are left with $\Sexpr{length(genes)}$ genes and
+$\Sexpr{length(spikes)}$ spike-ins.
+
+We store the data in an object of S4 class \Rclass{SeqExpressionSet} from  the \Biocpkg{EDASeq} package. This allows us to make full use of
+the plotting and normalization functionality of \Biocpkg{EDASeq}. Note,
+however, that all the methods in \Biocpkg{RUVSeq} are implemented for both
+ \Rclass{SeqExpressionSet} and \Rclass{matrix} objects. See the
+help pages for details.
+
+<<store_data>>=
+x <- as.factor(rep(c("Ctl", "Trt"), each=3))
+set <- newSeqExpressionSet(as.matrix(filtered),
+                           phenoData = data.frame(x, row.names=colnames(filtered)))
+set
+@ 
+
+The boxplots of relative log expression (RLE = log-ratio of read count to median read count across sample) and plots of principal components (PC) in Figure \ref{fig:rle} reveal a clear need for betwen-sample normalization. 
+
+<<rle, fig.cap="No normalization.",fig.subcap=c("RLE plot","PCA plot")>>=
+library(RColorBrewer)
+colors <- brewer.pal(3, "Set2")
+plotRLE(set, outline=FALSE, ylim=c(-4, 4), col=colors[x])
+plotPCA(set, col=colors[x], cex=1.2)
+@ 
+
+We can use the \Rfunction{betweenLaneNormalization} function of
+\Biocpkg{EDASeq} to normalize the data using upper-quartile (UQ)
+normalization \cite{bullard2010evaluation}.
+
+<<uq, fig.cap="Upper-quartile normalization.", fig.subcap=c("RLE plot","PCA plot")>>=
+set <- betweenLaneNormalization(set, which="upper")
+plotRLE(set, outline=FALSE, ylim=c(-4, 4), col=colors[x])
+plotPCA(set, col=colors[x], cex=1.2)
+@ 
+
+After upper-quartile normalization, treated sample \emph{Trt11} still
+shows extra variability when compared to the rest of the samples
+(Figure \ref{fig:uq}a). This is reflected by the first principal
+component (Figure \ref{fig:uq}b), that is driven by the difference
+between \emph{Trt11} and the other samples.
+
+\subsection{RUVg: Estimating the factors of unwanted variation using control genes}
+
+To estimate the factors of unwanted variation, we need a set of \emph{negative
+  control genes}, i.e., genes that can be assumed not to be influenced by the
+covariates of interest (in the case of the zebrafish dataset, the Gallein
+treatment). In many cases, such a set can be identified, e.g., housekeeping genes or spike-in controls. If a good set of
+negative controls is not readily available, one can define a set of ``in-silico empirical''
+controls as in Section \ref{sec:empirical}.
+
+Here, we use the ERCC spike-ins as controls and we consider $k=1$
+factors of unwanted variation. See \cite{risso2013ruv} and
+\cite{gagnon2012} for a discussion on the choice of $k$.
+
+<<ruv_spikes, fig.cap="RUVg normalization based on spike-in controls.", fig.subcap=c("RLE plot","PCA plot")>>=
+set1 <- RUVg(set, spikes, k=1)
+pData(set1)
+plotRLE(set1, outline=FALSE, ylim=c(-4, 4), col=colors[x])
+plotPCA(set1, col=colors[x], cex=1.2)
+@ 
+
+The \Rfunction{RUVg} function returns to pieces of information: the
+estimated factors of unwanted variation (added as columns to the \Rcode{phenoData} slot of \Robject{set}) and
+the normalized counts obtained by regressing the original counts on
+the unwanted factors. The normalized values are stored in the
+\Rcode{normalizedCounts} slot of \Robject{set} and can be accessed
+with the \Rfunction{normalizedCounts} method. These counts should be used only
+for exploration. It is important that subsequent DE analysis be
+done on the \emph{original counts} (accessible through the
+\Rfunction{counts} method), as removing the unwanted factors
+from the counts can also remove part of a factor of interest \cite{ruv4}.
+
+Note that one can relax the negative control
+  gene assumption by requiring instead the identification of a set of
+  positive or negative controls, with a priori known
+  expression fold-changes between samples, i.e., known $\beta$.  
+One can then use the centered counts for these genes ($\log Y - X\beta$) for normalization purposes. 
+
+\subsection{Differential expression analysis}
+
+Now, we are ready to look for differentially expressed genes, using
+the negative binomial GLM approach implemented in \Biocpkg{edgeR} (see the
+\Biocpkg{edgeR} package vignette for details).
+This is done by considering a design matrix that includes both the
+covariates of interest (here, the treatment status) and the factors of
+unwanted variation.
+
+<<edger, eval=FALSE>>=
+design <- model.matrix(~x + W_1, data=pData(set1))
+y <- DGEList(counts=counts(set), group=x)
+y <- calcNormFactors(y, method="upperquartile")
+y <- estimateGLMCommonDisp(y, design)
+y <- estimateGLMTagwiseDisp(y, design)
+
+fit <- glmFit(y, design)
+lrt <- glmLRT(fit, coef=2)
+
+topTags(lrt)
+@ 
+
+\subsection{Empirical control genes}
+\label{sec:empirical}
+
+If no genes are known \emph{a priori} not to be influenced by the covariates of interest, one can obtain a set of ``in-silico empirical'' negative controls, e.g., least significantly  DE genes based on a first-pass DE analysis performed prior to RUVg normalization.
+  
+<<empirical>>=
+design <- model.matrix(~x, data=pData(set))
+y <- DGEList(counts=counts(set), group=x)
+y <- calcNormFactors(y, method="upperquartile")
+y <- estimateGLMCommonDisp(y, design)
+y <- estimateGLMTagwiseDisp(y, design)
+
+fit <- glmFit(y, design)
+lrt <- glmLRT(fit, coef=2)
+
+top <- topTags(lrt, n=nrow(set))$table
+empirical <- rownames(set)[which(!(rownames(set) %in% rownames(top)[1:5000]))]
+@ 
+
+Here, we consider all but the top $5{,}000$ genes as ranked by
+\Biocpkg{edgeR} $p$-values.
+
+<<emp_ruvg, fig.cap="RUVg normalization based on empirical controls.", fig.subcap=c("RLE plot","PCA plot")>>=
+set2 <- RUVg(set, empirical, k=1)
+pData(set2)
+plotRLE(set2, outline=FALSE, ylim=c(-4, 4), col=colors[x])
+plotPCA(set2, col=colors[x], cex=1.2)
+@ 
+
+\section{RUVs: Estimating the factors of unwanted variation using replicate samples}
+\label{sec:replicate}
+
+As an alternative approach, one can use the \Rfunction{RUVs} method to
+estimate the factors of unwanted variation using replicate/negative control samples for which the covariates of interest are constant.
+
+
+First, we need to construct a matrix specifying the replicates. In
+the case of the zebrafish dataset, we can consider the three treated
+and the three control samples as replicate groups. This information is
+passed to \Rfunction{RUVs} in the following way.
+
+<<diff>>=
+differences <- matrix(data=c(1:3, 4:6), byrow=TRUE, nrow=2)
+differences
+@ 
+
+Although in principle one still needs control genes for the estimation
+of the factors of unwanted variation, we found that \Rfunction{RUVs} is robust to that choice and that using all the genes works
+well in practice \cite{risso2013ruv}.
+
+<<ruvs, eval=FALSE>>=
+set3 <- RUVs(set, genes, k=1, differences)
+pData(set3)
+@ 
+
+
+\section{RUVr: Estimating the factors of unwanted variation using residuals}
+\label{sec:residuals}
+
+Finally, a third approach is to consider the residuals (e.g., deviance residuals) from a first-pass GLM regression of the counts on the covariates of interest. This can be achieved with the \Rfunction{RUVr} method.
+
+First, we need to compute the residuals from the GLM fit, without RUVg normalization, but possibly after normalization using a method such as upper-quartile normalization. 
+<<res, eval=FALSE>>=
+design <- model.matrix(~x, data=pData(set))
+y <- DGEList(counts=counts(set), group=x)
+y <- calcNormFactors(y, method="upperquartile")
+y <- estimateGLMCommonDisp(y, design)
+y <- estimateGLMTagwiseDisp(y, design)
+
+fit <- glmFit(y, design)
+res <- residuals(fit, type="deviance")
+@ 
+
+Again, we can use all the genes to estimate the factors of unwanted
+variation.
+
+<<ruvr, eval=FALSE>>=
+set4 <- RUVr(set, genes, k=1, res)
+pData(set4)
+@ 
+
+\section{Session info}
+
+<<sessionInfo, results="asis">>=
+toLatex(sessionInfo())
+@ 
+
+\bibliography{biblio}
+
+\end{document}
+
+
+
+
+% LocalWords:  DE RUVSeq RNA Seq GLM RUVg RUVs RUVr OLS RUV edgeR DESeq SVD emp
+% LocalWords:  workflow zebrafish zebrafishRNASeq gallein Ensembl ERCC rownames
+% LocalWords:  ruvg subcap RLE PCA pData plotRLE ylim col plotPCA cex diff nrow
+% LocalWords:  byrow ruvs DGEList calcNormFactors upperquartile glmFit ruvr
+% LocalWords:  estimateGLMCommonDisp estimateGLMTagwiseDisp sessionInfo asis
+% LocalWords:  toLatex biblio

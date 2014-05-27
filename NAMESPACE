@@ -1,0 +1,6 @@
+import(methods)
+importFrom(MASS, negative.binomial)
+importClassesFrom(EDASeq, SeqExpressionSet)
+importClassesFrom(edgeR, DGEGLM)
+S3method(residuals, DGEGLM)
+exportMethods(RUVg, RUVs, RUVr)

@@ -1,0 +1,17 @@
+bibentry("Article",
+         title = "{Normalization of RNA-seq data using factor analysis of control genes or samples}",
+         author = c(person("Davide", "Risso"),
+	 person("John", "Ngai"),
+	 person("Terence", "Speed"),
+         person("Sandrine", "Dudoit")),
+         year = 2014,
+         journal = "Nature Biotechnology",
+	 volume = "",
+         number = "",
+	 pages = "",
+	 note = "In press",
+         textVersion = 
+         paste("D. Risso, J. Ngai, T. P. Speed and S. Dudoit","(2014).",
+               "Normalization of RNA-seq data using factor analysis of control genes or samples",
+               "Nature Biotechnology.","In press")
+         )
