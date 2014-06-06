@@ -13,5 +13,5 @@ bibentry("Article",
          textVersion = 
          paste("D. Risso, J. Ngai, T. P. Speed and S. Dudoit","(2014).",
                "Normalization of RNA-seq data using factor analysis of control genes or samples",
-               "Nature Biotechnology.","In press")
+               "","In press")
          )
