@@ -150,7 +150,7 @@ estimated factors of unwanted variation (added as columns to the \Rcode{phenoDat
 the normalized counts obtained by regressing the original counts on
 the unwanted factors. The normalized values are stored in the
 \Rcode{normalizedCounts} slot of \Robject{set} and can be accessed
-with the \Rfunction{normalizedCounts} method. These counts should be used only
+with the \Rfunction{normCounts} method. These counts should be used only
 for exploration. It is important that subsequent DE analysis be
 done on the \emph{original counts} (accessible through the
 \Rfunction{counts} method), as removing the unwanted factors

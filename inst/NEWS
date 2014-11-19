@@ -1,5 +1,11 @@
+Changes in Version 1.1
+------------------------
+
+* Corrected typo in vignette
+
 Changes in Version 0.1
 ------------------------
+
 * Created S4 methods for RUV* functions
 * Created Vignette
 * Initial submission to Bioconductor
