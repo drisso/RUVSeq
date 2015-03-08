@@ -2,7 +2,15 @@ setMethod(
           f = "RUVr",
           signature = signature(x="matrix", cIdx="ANY", k="numeric", residuals="matrix"),
           definition = function(x, cIdx, k, residuals, center=TRUE, round=TRUE, epsilon=1, tolerance=1e-8) {
-            Y <- t(log(x+epsilon))
+            if ( !all( .isWholeNumber(x < 0) ) ){
+                warning(paste0("It seems the count matrix is already log transformed.\n",
+                               "Skipping log transformation.\n",
+                               "If not, please fix the matrix. The count matrix should",
+                               "contain only positive numbers."))
+                Y <- t(x)
+            }else{
+                Y <- t(log(x+epsilon))
+            }
             if(center) {
               E <- apply(residuals, 1, function(x) scale(x, center=TRUE, scale=FALSE))
             } else {

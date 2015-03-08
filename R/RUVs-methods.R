@@ -2,7 +2,15 @@ setMethod(
           f = "RUVs",
           signature = signature(x="matrix", cIdx="ANY", k="numeric", scIdx="matrix"),
           definition = function(x, cIdx, k, scIdx, round=TRUE, epsilon=1, tolerance=1e-8) {
-            Y <- t(log(x+epsilon))
+            if ( !all( .isWholeNumber(x < 0) ) ){
+                warning(paste0("It seems the count matrix is already log transformed.\n",
+                               "Skipping log transformation.\n",
+                               "If not, please fix the matrix. The count matrix should",
+                               "contain only positive numbers."))
+                Y <- t(x)
+            }else{
+                Y <- t(log(x+epsilon))
+            }
             scIdx <- scIdx[rowSums(scIdx > 0) >= 2, , drop = FALSE]
             Yctls <- matrix(0, prod(dim(scIdx)), ncol(Y))
             m <- nrow(Y)
@@ -10,10 +18,10 @@ setMethod(
             c <- 0
             for (ii in 1:nrow(scIdx)) {
               for (jj in 1:(ncol(scIdx))) {
-                if (scIdx[ii, jj] == -1) 
+                if (scIdx[ii, jj] == -1)
                   next
                 c <- c + 1
-                Yctls[c, ] <- Y[scIdx[ii, jj], , drop = FALSE] - 
+                Yctls[c, ] <- Y[scIdx[ii, jj], , drop = FALSE] -
                   colMeans(Y[scIdx[ii, (scIdx[ii, ] > 0)], , drop = FALSE])
               }
             }
