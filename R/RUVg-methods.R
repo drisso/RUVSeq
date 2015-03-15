@@ -9,8 +9,8 @@ setMethod(
             if ( !all( .isWholeNumber(x) ) ){
                 warning(paste0("It seems the count matrix is already log transformed.\n",
                                "Skipping log transformation.\n",
-                               "If not, please fix the matrix. The count matrix should",
-                               "contain only positive numbers."))
+                               "If not, please fix the matrix.\n",
+                               "The count matrix should contain only positive numbers."))
                 Y <- t(x)
             }else{
                 Y <- t(log(x+epsilon))
