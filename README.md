@@ -1,12 +1,15 @@
 # R package: RUVSeq
 
-This is the developer version of the Bioconductor package [RUVSeq](http://www.bioconductor.org/packages/devel/bioc/html/RUVSeq.html). Install in R as:
+<a href="http://www.bioconductor.org/packages/release/bioc/html/RUVSeq.html#since"><img border="0" src="http://www.bioconductor.org/shields/years-in-bioc/RUVSeq.svg" title="How long since the package was first in a released Bioconductor version (or is it in devel only)."></a> <a href="http://bioconductor.org/packages/stats/bioc/RUVSeq.html"><img border="0" src="http://www.bioconductor.org/shields/downloads/RUVSeq.svg" title="Percentile (top 5/20/50% or 'available') of downloads over last 6 full months. Comparison is done across all package categories (software, annotation, experiment)."></a> <a href="https://support.bioconductor.org/t/RUVSeq/"><img border="0" src="http://www.bioconductor.org/shields/posts/RUVSeq.svg" title="Support site activity, last 6 months: tagged questions/avg. answers per question/avg. comments per question/accepted answers, or 0 if no tagged posts."></a> <a href="http://www.bioconductor.org/packages/release/bioc/html/RUVSeq.html#svn_source"><img border="0" src="http://www.bioconductor.org/shields/commits/bioc/RUVSeq.svg" title="average Subversion commits (to the devel branch) per month for the last 6 months"></a> [![Coverage Status](https://coveralls.io/repos/drisso/RUVSeq/badge.svg?branch=master)](https://coveralls.io/r/drisso/RUVSeq?branch=master)
+
+This is the developer version of the Bioconductor package [RUVSeq](http://www.bioconductor.org/packages/RUVSeq). Install in R as:
 
 ```r
 source("http://bioconductor.org/biocLite.R")
 biocLite("RUVSeq")
 ```
-## R CMD check results
+## Status
 
-* Bioconductor: [build/check reports](http://master.bioconductor.org/checkResults/devel/bioc-LATEST/RUVSeq/)
+* Bioc-release <a href="http://www.bioconductor.org/packages/release/bioc/html/RUVSeq.html#archives"><img border="0" src="http://www.bioconductor.org/shields/availability/release/RUVSeq.svg" title="Whether the package is available on all platforms; click for details."></a> <a href="http://bioconductor.org/checkResults/release/bioc-LATEST/RUVSeq/"><img border="0" src="http://www.bioconductor.org/shields/build/release/bioc/RUVSeq.svg" title="build results; click for full report"></a>
+* Bioc-devel: <a href="http://www.bioconductor.org/packages/devel/bioc/html/RUVSeq.html#archives"><img border="0" src="http://www.bioconductor.org/shields/availability/devel/RUVSeq.svg" title="Whether the package is available on all platforms; click for details."></a> <a href="http://bioconductor.org/checkResults/devel/bioc-LATEST/RUVSeq/"><img border="0" src="http://www.bioconductor.org/shields/build/devel/bioc/EDASeq.svg" title="build results; click for full report"></a>
 * Travis CI: [![Build Status](https://travis-ci.org/drisso/RUVSeq.svg?branch=master)](https://travis-ci.org/drisso/RUVSeq)
