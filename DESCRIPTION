@@ -14,3 +14,5 @@ VignetteBuilder: knitr
 License: Artistic-2.0
 LazyLoad: yes
 biocViews: DifferentialExpression, Preprocessing, RNASeq, Software
+URL: https://github.com/drisso/RUVSeq
+BugReports: https://github.com/drisso/RUVSeq/issues
