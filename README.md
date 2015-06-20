@@ -13,3 +13,7 @@ biocLite("RUVSeq")
 * Bioc-release <a href="http://www.bioconductor.org/packages/release/bioc/html/RUVSeq.html#archives"><img border="0" src="http://www.bioconductor.org/shields/availability/release/RUVSeq.svg" title="Whether the package is available on all platforms; click for details."></a> <a href="http://bioconductor.org/checkResults/release/bioc-LATEST/RUVSeq/"><img border="0" src="http://www.bioconductor.org/shields/build/release/bioc/RUVSeq.svg" title="build results; click for full report"></a>
 * Bioc-devel: <a href="http://www.bioconductor.org/packages/devel/bioc/html/RUVSeq.html#archives"><img border="0" src="http://www.bioconductor.org/shields/availability/devel/RUVSeq.svg" title="Whether the package is available on all platforms; click for details."></a> <a href="http://bioconductor.org/checkResults/devel/bioc-LATEST/RUVSeq/"><img border="0" src="http://www.bioconductor.org/shields/build/devel/bioc/EDASeq.svg" title="build results; click for full report"></a>
 * Travis CI: [![Build Status](https://travis-ci.org/drisso/RUVSeq.svg?branch=master)](https://travis-ci.org/drisso/RUVSeq)
+
+## Issues and bug reports
+
+Please use https://github.com/drisso/RUVSeq/issues to submit issues, bug reports, and comments.
