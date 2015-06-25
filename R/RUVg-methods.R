@@ -5,16 +5,21 @@
 setMethod(
           f = "RUVg",
           signature = signature(x="matrix", cIdx="ANY", k="numeric"),
-          definition = function(x, cIdx, k, drop=0, center=TRUE, round=TRUE, epsilon=1, tolerance=1e-8) {
+          definition = function(x, cIdx, k, drop=0, center=TRUE, round=TRUE, epsilon=1, tolerance=1e-8, isLog=FALSE) {
+            
             if ( !all( .isWholeNumber(x) ) ){
                 warning(paste0("It seems the count matrix is already log transformed.\n",
                                "Skipping log transformation.\n",
                                "If not, please fix the matrix.\n",
                                "The count matrix should contain only positive numbers."))
+            }
+            
+            if(!all(.isWholeNumber(x)) | isLog) {
                 Y <- t(x)
-            }else{
+            } else {
                 Y <- t(log(x+epsilon))
             }
+          
             if (center) {
               Ycenter <- apply(Y, 2, function(x) scale(x, center = TRUE, scale=FALSE))
             } else {
@@ -44,7 +49,7 @@ setMethod(
 setMethod(
           f = "RUVg",
           signature = signature(x="SeqExpressionSet", cIdx="character", k="numeric"),
-          definition = function(x, cIdx, k, drop=0, center=TRUE, round=TRUE, epsilon=1, tolerance=1e-8) {
+          definition = function(x, cIdx, k, drop=0, center=TRUE, round=TRUE, epsilon=1, tolerance=1e-8, isLog=FALSE) {
             if(!all(cIdx %in% rownames(x))) {
               stop("'cIdx' must contain gene names present in 'x'")
             }
@@ -56,7 +61,7 @@ setMethod(
             } else {
               counts <- normCounts(x)
             }
-            retval <- RUVg(counts, cIdx, k, drop, center, round, epsilon, tolerance)
+            retval <- RUVg(counts, cIdx, k, drop, center, round, epsilon, tolerance, isLog=FALSE)
             newSeqExpressionSet(counts = counts(x),
                                 normalizedCounts = retval$normalizedCounts,
                                 phenoData = cbind(pData(x), retval$W)

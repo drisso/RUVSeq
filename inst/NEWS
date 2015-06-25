@@ -1,8 +1,14 @@
+Changes in Version 1.3
+------------------------
+
+* New argument 'isLog' to RUV* methods
+
 Changes in Version 1.1
 ------------------------
 
 * Corrected typo in vignette
 * RUV* methods for matrix now support log data
+
 
 Changes in Version 0.1
 ------------------------

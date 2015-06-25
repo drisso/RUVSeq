@@ -1,17 +1,22 @@
 setMethod(
           f = "RUVr",
           signature = signature(x="matrix", cIdx="ANY", k="numeric", residuals="matrix"),
-          definition = function(x, cIdx, k, residuals, center=TRUE, round=TRUE, epsilon=1, tolerance=1e-8) {
+          definition = function(x, cIdx, k, residuals, center=TRUE, round=TRUE, epsilon=1, tolerance=1e-8, isLog=FALSE) {
+
             if ( !all( .isWholeNumber(x) ) ){
-                warning(paste0("It seems the count matrix is already log transformed.\n",
-                               "Skipping log transformation.\n",
-                               "If not, please fix the matrix.\n",
-                               "The count matrix should contain only positive numbers."))
-                Y <- t(x)
-            }else{
-                Y <- t(log(x+epsilon))
+              warning(paste0("It seems the count matrix is already log transformed.\n",
+                             "Skipping log transformation.\n",
+                             "If not, please fix the matrix.\n",
+                             "The count matrix should contain only positive numbers."))
             }
-            if(center) {
+            
+            if(!all(.isWholeNumber(x)) | isLog) {
+              Y <- t(x)
+          } else {
+            Y <- t(log(x+epsilon))
+          }
+          
+          if(center) {
               E <- apply(residuals, 1, function(x) scale(x, center=TRUE, scale=FALSE))
             } else {
               E <- t(residuals)
@@ -36,7 +41,7 @@ setMethod(
 setMethod(
           f = "RUVr",
           signature = signature(x="SeqExpressionSet", cIdx="character", k="numeric", residuals="matrix"),
-          definition = function(x, cIdx, k, residuals, center=TRUE, round=TRUE, epsilon=1, tolerance=1e-8) {
+          definition = function(x, cIdx, k, residuals, center=TRUE, round=TRUE, epsilon=1, tolerance=1e-8, isLog=FALSE) {
             if(!all(cIdx %in% rownames(x))) {
               stop("'cIdx' must contain gene names present in 'x'")
             }
@@ -58,7 +63,7 @@ setMethod(
               counts <- normCounts(x)
             }
 
-            retval <- RUVr(counts, cIdx, k, residuals, center, round, epsilon, tolerance)
+            retval <- RUVr(counts, cIdx, k, residuals, center, round, epsilon, tolerance, isLog=FALSE)
             newSeqExpressionSet(counts = counts(x),
                                 normalizedCounts = retval$normalizedCounts,
                                 phenoData = cbind(pData(x), retval$W)

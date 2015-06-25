@@ -1,6 +1,8 @@
 import(methods)
 importFrom(MASS, negative.binomial)
 importClassesFrom(EDASeq, SeqExpressionSet)
+importFrom(EDASeq, normCounts, newSeqExpressionSet)
+importFrom(Biobase, pData)
 importClassesFrom(edgeR, DGEGLM)
 S3method(residuals, DGEGLM)
 exportMethods(RUVg, RUVs, RUVr)

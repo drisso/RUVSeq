@@ -14,7 +14,7 @@ This function implements the RUVr method of Risso et al. (2014).
 }
 
 \usage{
-RUVr(x, cIdx, k, residuals, center=TRUE, round=TRUE, epsilon=1, tolerance=1e-8)
+RUVr(x, cIdx, k, residuals, center=TRUE, round=TRUE, epsilon=1, tolerance=1e-8, isLog=FALSE)
 }
 
 \arguments{
@@ -50,6 +50,11 @@ A small constant (usually no larger than one) to be added to the counts prior to
 \item{tolerance}{
 Tolerance in the selection of the number of positive singular values, i.e., a singular value must be larger than \code{tolerance} to be considered positive.
 }
+
+\item{isLog}{
+Set to \code{TRUE} if the input matrix is already log-transformed. Ignored if \code{x} is a \linkS4class{SeqExpressionSet}.
+}
+
 }
 
 \section{Methods}{

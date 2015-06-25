@@ -1,17 +1,22 @@
 setMethod(
           f = "RUVs",
           signature = signature(x="matrix", cIdx="ANY", k="numeric", scIdx="matrix"),
-          definition = function(x, cIdx, k, scIdx, round=TRUE, epsilon=1, tolerance=1e-8) {
+          definition = function(x, cIdx, k, scIdx, round=TRUE, epsilon=1, tolerance=1e-8, isLog=FALSE) {
+
             if ( !all( .isWholeNumber(x) ) ){
-                warning(paste0("It seems the count matrix is already log transformed.\n",
-                               "Skipping log transformation.\n",
-                               "If not, please fix the matrix.\n",
-                               "The count matrix should contain only positive numbers."))
-            Y <- t(x)
-            }else{
-                Y <- t(log(x+epsilon))
+              warning(paste0("It seems the count matrix is already log transformed.\n",
+                             "Skipping log transformation.\n",
+                             "If not, please fix the matrix.\n",
+                             "The count matrix should contain only positive numbers."))
             }
-            scIdx <- scIdx[rowSums(scIdx > 0) >= 2, , drop = FALSE]
+            
+            if(!all(.isWholeNumber(x)) | isLog) {
+              Y <- t(x)
+          } else {
+            Y <- t(log(x+epsilon))
+          }
+          
+          scIdx <- scIdx[rowSums(scIdx > 0) >= 2, , drop = FALSE]
             Yctls <- matrix(0, prod(dim(scIdx)), ncol(Y))
             m <- nrow(Y)
             n <- ncol(Y)
@@ -50,7 +55,7 @@ setMethod(
 setMethod(
           f = "RUVs",
           signature = signature(x="SeqExpressionSet", cIdx="character", k="numeric", scIdx="matrix"),
-          definition = function(x, cIdx, k, scIdx, round=TRUE, epsilon=1, tolerance=1e-8) {
+          definition = function(x, cIdx, k, scIdx, round=TRUE, epsilon=1, tolerance=1e-8, isLog=FALSE) {
 
             if(!all(cIdx %in% rownames(x))) {
               stop("'cIdx' must contain gene names present in 'x'")
@@ -63,7 +68,7 @@ setMethod(
             } else {
               counts <- normCounts(x)
             }
-            retval <- RUVs(counts, cIdx, k, scIdx, round, epsilon, tolerance)
+            retval <- RUVs(counts, cIdx, k, scIdx, round, epsilon, tolerance, isLog=FALSE)
             newSeqExpressionSet(counts = counts(x),
                                 normalizedCounts = retval$normalizedCounts,
                                 phenoData = cbind(pData(x), retval$W)
