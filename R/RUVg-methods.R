@@ -7,7 +7,7 @@ setMethod(
           signature = signature(x="matrix", cIdx="ANY", k="numeric"),
           definition = function(x, cIdx, k, drop=0, center=TRUE, round=TRUE, epsilon=1, tolerance=1e-8, isLog=FALSE) {
             
-            if ( !all( .isWholeNumber(x) ) ){
+            if ( !all( .isWholeNumber(x) ) & !isLog ){
                 warning(paste0("It seems the count matrix is already log transformed.\n",
                                "Skipping log transformation.\n",
                                "If not, please fix the matrix.\n",
