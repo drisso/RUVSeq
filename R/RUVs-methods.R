@@ -41,11 +41,15 @@ setMethod(
             Wa <- W %*% a
             correctedY <- Y[1:m, ] - W[1:m, ] %*% a
 
-            if(round) {
-              correctedY <- round(exp(correctedY))
-            } else {
-              correctedY <- exp(correctedY)
+            if(!isLog & all(.isWholeNumber(x))) {
+                if(round) {
+                    correctedY <- round(exp(correctedY) - epsilon)
+                    correctedY[correctedY<0] <- 0
+                } else {
+                    correctedY <- exp(correctedY) - epsilon
+                }
             }
+
             W <- as.matrix(W[1:m,])
             colnames(W) <- paste("W", seq(1, ncol(W)), sep="_")
             return(list(W = W, normalizedCounts = t(correctedY)))

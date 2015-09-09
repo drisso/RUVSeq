@@ -1,7 +1,8 @@
 Changes in Version 1.3
 ------------------------
 
-* New argument 'isLog' to RUV* methods
+* New argument 'isLog' to RUV* methods: if counts provided on the log scale normalizedCounts will also be on the log scale.
+* Fixed a bug: epsilon is now removed from the corrected counts.
 
 Changes in Version 1.1
 ------------------------

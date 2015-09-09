@@ -43,7 +43,8 @@ before_install:
 
 install:
   - $RENV install_r MASS RColorBrewer
-  - $RENV install_bioc EDASeq DESeq BiocStyle knitr edgeR zebrafishRNASeq
+  - $RENV install_bioc_deps
+##  EDASeq DESeq BiocStyle knitr edgeR zebrafishRNASeq
 ## Less overhead when not using 'install_deps'
 ##  - $RENV install_deps
 

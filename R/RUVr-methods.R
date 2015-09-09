@@ -28,10 +28,13 @@ setMethod(
             W <- svdWa$u[, (1:k), drop = FALSE]
             alpha <- solve(t(W) %*% W) %*% t(W) %*% Y
             correctedY <- Y - W %*% alpha
-            if(round) {
-              correctedY <- round(exp(correctedY))
-            } else {
-              correctedY <- exp(correctedY)
+            if(!isLog & all(.isWholeNumber(x))) {
+                if(round) {
+                    correctedY <- round(exp(correctedY) - epsilon)
+                    correctedY[correctedY<0] <- 0
+                } else {
+                    correctedY <- exp(correctedY) - epsilon
+                }
             }
             colnames(W) <- paste("W", seq(1, ncol(W)), sep="_")
             return(list(W = W, normalizedCounts = t(correctedY)))

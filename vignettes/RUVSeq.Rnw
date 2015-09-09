@@ -222,11 +222,10 @@ estimate the factors of unwanted variation using replicate/negative control samp
 
 First, we need to construct a matrix specifying the replicates. In
 the case of the zebrafish dataset, we can consider the three treated
-and the three control samples as replicate groups. This information is
-passed to \Rfunction{RUVs} in the following way.
+and the three control samples as replicate groups. The function \Rfunction{makeGroups} can be used.
 
 <<diff>>=
-differences <- matrix(data=c(1:3, 4:6), byrow=TRUE, nrow=2)
+differences <- makeGroups(x)
 differences
 @ 
 
