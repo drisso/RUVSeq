@@ -1,8 +1,9 @@
 Changes in Version 1.3
 ------------------------
 
-* New argument 'isLog' to RUV* methods: if counts provided on the log scale normalizedCounts will also be on the log scale.
+* New argument 'isLog' to RUV* methods: if counts provided on the log scale, normalizedCounts will also be on the log scale.
 * Fixed a bug: epsilon is now removed from the corrected counts.
+* New function makeGroups to make scIdx matrix for RUVs.
 
 Changes in Version 1.1
 ------------------------

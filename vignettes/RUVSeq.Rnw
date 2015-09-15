@@ -145,7 +145,7 @@ plotRLE(set1, outline=FALSE, ylim=c(-4, 4), col=colors[x])
 plotPCA(set1, col=colors[x], cex=1.2)
 @ 
 
-The \Rfunction{RUVg} function returns to pieces of information: the
+The \Rfunction{RUVg} function returns two pieces of information: the
 estimated factors of unwanted variation (added as columns to the \Rcode{phenoData} slot of \Robject{set}) and
 the normalized counts obtained by regressing the original counts on
 the unwanted factors. The normalized values are stored in the
