@@ -6,13 +6,13 @@ bibentry("Article",
          person("Sandrine", "Dudoit")),
          year = 2014,
          journal = "Nature Biotechnology",
-	 volume = "",
-         number = "",
-	 pages = "",
+	 volume = "32",
+         number = "9",
+	 pages = "896--902",
 	 note = "In press",
 	 url = "http://www.nature.com/nbt/journal/v32/n9/full/nbt.2931.html",
          textVersion = 
          paste("D. Risso, J. Ngai, T. P. Speed and S. Dudoit","(2014).",
                "Normalization of RNA-seq data using factor analysis of control genes or samples",
-               "Nature Biotechnology","In press")
+               "Nature Biotechnology,","32(9), 896-902")
          )

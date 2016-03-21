@@ -45,7 +45,7 @@ The simultaneous estimation of $W$, $\alpha$, $\beta$, and $k$ is infeasible. Fo
 The resulting estimate of $W$ can then be plugged into Equation \eqref{eq1}, for the full set of genes and samples, and $\alpha$ and $\beta$ estimated by GLM regression. Normalized read counts can be obtained as residuals from
   ordinary least squares (OLS) regression of $\log Y - O$ on the estimated $W$.
     
-Note that although here we illustrate the RUV approach using the GLM implementation of \Biocpkg{edgeR}, all three RUV versions can be readily adapted to work with any DE method formulated within a GLM framework, e.g., \Biocpkg{DESeq}, \Biocpkg{DESeq2}.
+Note that although here we illustrate the RUV approach using the GLM implementation of \Biocpkg{edgeR} and \Biocpkg{DESeq2}, all three RUV versions can be readily adapted to work with any DE method formulated within a GLM framework.
 
 See \cite{risso2013ruv} for full details and algorithms for each of the
 three RUV procedures.
@@ -64,7 +64,7 @@ opts_chunk$set(dev="pdf", fig.align="center", cache=TRUE, message=FALSE, out.wid
 options(width=60)
 @
 
-<<data>>=
+<<data, warning=FALSE>>=
 library(RUVSeq)
 library(zebrafishRNASeq)
 data(zfGenes)
@@ -163,6 +163,7 @@ Note that one can relax the negative control
 One can then use the centered counts for these genes ($\log Y - X\beta$) for normalization purposes. 
 
 \subsection{Differential expression analysis}
+\label{sec:edger}
 
 Now, we are ready to look for differentially expressed genes, using
 the negative binomial GLM approach implemented in \Biocpkg{edgeR} (see the
@@ -173,7 +174,7 @@ unwanted variation.
 
 <<edger, eval=FALSE>>=
 design <- model.matrix(~x + W_1, data=pData(set1))
-y <- DGEList(counts=counts(set), group=x)
+y <- DGEList(counts=counts(set1), group=x)
 y <- calcNormFactors(y, method="upperquartile")
 y <- estimateGLMCommonDisp(y, design)
 y <- estimateGLMTagwiseDisp(y, design)
@@ -212,6 +213,28 @@ pData(set2)
 plotRLE(set2, outline=FALSE, ylim=c(-4, 4), col=colors[x])
 plotPCA(set2, col=colors[x], cex=1.2)
 @ 
+
+\subsection{Differential expression analysis with \Biocpkg{DESeq2}}
+
+In alternative to \Biocpkg{edgeR}, one can perform differential expression analysis with \Biocpkg{DESeq2}. The approach is very similar, namely, we will use the same design matrix specified in Section \ref{sec:edger}, but we need to specify it within the \Rclass{DESeqDataSet} object.
+
+<<deseq2, eval=FALSE>>=
+library(DESeq2)
+dds <- DESeqDataSetFromMatrix(countData = counts(set1),
+                              colData = pData(set1),
+                              design = ~ W_1 + x)
+dds <- DESeq(dds)
+res <- results(dds)
+res
+@ 
+
+Note that this will perform by default a Wald test of significance of the last variable in the design formula, in this case $x$. If one wants to perform a likelihood ratio test, she needs to specify a reduced model that includes $W$ (see the \Biocpkg{DESeq2} vignette for more details on the test statistics).
+
+<<deseq2lrt, eval=FALSE>>=
+dds <- DESeq(dds, test="LRT", reduced=as.formula("~ W_1"))
+res <- results(dds)
+res
+@
 
 \section{RUVs: Estimating the factors of unwanted variation using replicate samples}
 \label{sec:replicate}

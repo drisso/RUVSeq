@@ -19,13 +19,10 @@ r1b <- lapply(ks, function(k) RUVg(log(mat+1), 1:10, k))
 r1c <- lapply(ks, function(k) RUVg(log(mat+1), 1:10, k, isLog=TRUE))
 r1d <- lapply(ks, function(k) RUVg(mat, 1:10, k, round=FALSE))
 
-stopifnot(all(sapply(ks, function(i) all(r1[[i]]$W==r1b[[i]]$W))))
-stopifnot(all(sapply(ks, function(i) all(r1d[[i]]$W==r1b[[i]]$W))))
+stopifnot(all(sapply(ks, function(i) all(r1[[i]]$W==r1c[[i]]$W))))
+stopifnot(all(sapply(ks, function(i) all(r1d[[i]]$W==r1c[[i]]$W))))
 
-stopifnot(all(sapply(ks, function(i) all(log(r1d[[i]]$normalizedCounts+1)-r1b[[i]]$normalizedCounts<1e-8))))
-
-stopifnot(all(sapply(ks, function(i) all(r1c[[i]]$W==r1b[[i]]$W))))
-stopifnot(all(sapply(ks, function(i) all(r1c[[i]]$normalizedCounts==r1b[[i]]$normalizedCounts))))
+stopifnot(all(sapply(ks, function(i) all(log(r1d[[i]]$normalizedCounts+1)-r1c[[i]]$normalizedCounts<1e-8))))
 
 ## SeqExpressionSet
 r2 <- lapply(ks, function(k) RUVg(es, rownames(es)[1:10], k))

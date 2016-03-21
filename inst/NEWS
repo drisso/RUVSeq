@@ -1,3 +1,11 @@
+Changes in Version 1.5
+------------------------
+
+* When data are not integer, only a warning is thrown and not an error.
+* Added an example on how to use RUV with DESeq2.
+* Added volume and pages to citation.
+
+
 Changes in Version 1.3
 ------------------------
 

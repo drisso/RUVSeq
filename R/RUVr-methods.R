@@ -4,18 +4,17 @@ setMethod(
           definition = function(x, cIdx, k, residuals, center=TRUE, round=TRUE, epsilon=1, tolerance=1e-8, isLog=FALSE) {
 
             if ( !all( .isWholeNumber(x) ) & !isLog ){
-              warning(paste0("It seems the count matrix is already log transformed.\n",
-                             "Skipping log transformation.\n",
-                             "If not, please fix the matrix.\n",
-                             "The count matrix should contain only positive numbers."))
+              warning(paste0("The expression matrix does not contain counts.\n",
+                             "Please, pass a matrix of counts (not logged) or set isLog to TRUE to skip the log transformation"))
             }
             
-            if(!all(.isWholeNumber(x)) | isLog) {
+            if(isLog) {
               Y <- t(x)
-          } else {
-            Y <- t(log(x+epsilon))
-          }
-          
+            } else {
+              Y <- t(log(x+epsilon))
+            }
+            
+            
           if(center) {
               E <- apply(residuals, 1, function(x) scale(x, center=TRUE, scale=FALSE))
             } else {

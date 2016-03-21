@@ -1,5 +1,5 @@
 Package: RUVSeq
-Version: 1.5.0
+Version: 1.5.2
 Title: Remove Unwanted Variation from RNA-Seq Data
 Description: This package implements the remove unwanted variation
         (RUV) methods of Risso et al. (2014) for the normalization of
@@ -7,13 +7,14 @@ Description: This package implements the remove unwanted variation
 Authors@R: c(person("Davide", "Risso", email = "risso.davide@gmail.com",
 	          role = c("aut", "cre", "cph")),
 	     person("Sandrine", "Dudoit", role = "aut"),
-	     person("Lorena", "Pantano", role = "ctb"))
+	     person("Lorena", "Pantano", role = "ctb"),
+	     person("Kamil", "Slowikowski", role = "ctb"))
 Author: Davide Risso [aut, cre, cph], Sandrine Dudoit [aut], Lorena Pantano [ctb], Kamil Slowikowski [ctb]
 Maintainer: Davide Risso <risso.davide@gmail.com>
 Date: 04-15-2014
 Imports: methods, MASS
 Depends: Biobase, EDASeq (>= 1.99.1), edgeR
-Suggests: BiocStyle, knitr, RColorBrewer, zebrafishRNASeq, DESeq
+Suggests: BiocStyle, knitr, RColorBrewer, zebrafishRNASeq, DESeq2
 VignetteBuilder: knitr
 License: Artistic-2.0
 LazyLoad: yes
