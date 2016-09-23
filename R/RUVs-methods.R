@@ -3,17 +3,17 @@ setMethod(
           signature = signature(x="matrix", cIdx="ANY", k="numeric", scIdx="matrix"),
           definition = function(x, cIdx, k, scIdx, round=TRUE, epsilon=1, tolerance=1e-8, isLog=FALSE) {
 
-            if ( !all( .isWholeNumber(x) ) & !isLog ){
+            if(!isLog && !all(.isWholeNumber(x))) {
               warning(paste0("The expression matrix does not contain counts.\n",
                              "Please, pass a matrix of counts (not logged) or set isLog to TRUE to skip the log transformation"))
             }
-            
+
             if(isLog) {
               Y <- t(x)
             } else {
               Y <- t(log(x+epsilon))
             }
-            
+
           scIdx <- scIdx[rowSums(scIdx > 0) >= 2, , drop = FALSE]
             Yctls <- matrix(0, prod(dim(scIdx)), ncol(Y))
             m <- nrow(Y)
@@ -39,7 +39,7 @@ setMethod(
             Wa <- W %*% a
             correctedY <- Y[1:m, ] - W[1:m, ] %*% a
 
-            if(!isLog & all(.isWholeNumber(x))) {
+            if(!isLog && all(.isWholeNumber(x))) {
                 if(round) {
                     correctedY <- round(exp(correctedY) - epsilon)
                     correctedY[correctedY<0] <- 0

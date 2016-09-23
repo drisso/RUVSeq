@@ -4,6 +4,7 @@
 ^.svn
 ^.git
 README[.]md
+.gitignore
 
 #----------------------------
 # Travis-CI et al.
@@ -29,3 +30,18 @@ README[.]md
 ^[.]devel
 ^[.]test
 ^[.]check
+^.*\.Rproj$
+^\.Rproj\.user$
+
+#----------------------------
+# Latex related
+#----------------------------
+vignettes/*.aux
+vignettes/*.bbl
+vignettes/*.log
+vignettes/*.out
+vignettes/*.pdf
+vignettes/*.tex
+vignettes/*.toc
+vignettes/cache/
+vignettes/figure/

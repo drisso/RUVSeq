@@ -1,0 +1,10 @@
+vignettes/*.aux
+vignettes/*.bbl
+vignettes/*.log
+vignettes/*.out
+vignettes/*.pdf
+vignettes/*.tex
+vignettes/*.toc
+vignettes/cache/
+vignettes/figure/
+.Rproj.user
