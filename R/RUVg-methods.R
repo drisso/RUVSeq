@@ -47,6 +47,9 @@ setMethod(
           f = "RUVg",
           signature = signature(x="SeqExpressionSet", cIdx="character", k="numeric"),
           definition = function(x, cIdx, k, drop=0, center=TRUE, round=TRUE, epsilon=1, tolerance=1e-8, isLog=FALSE) {
+            if(isLog) {
+              stop("SeqExpressionSet cannot contain log counts. Please, set isLog=FALSE.")
+            }
             if(!all(cIdx %in% rownames(x))) {
               stop("'cIdx' must contain gene names present in 'x'")
             }

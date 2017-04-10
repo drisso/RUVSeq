@@ -57,7 +57,7 @@ Tolerance in the selection of the number of positive singular values, i.e., a si
 }
 
 \item{isLog}{
-Set to \code{TRUE} if the input matrix is already log-transformed. Ignored if \code{x} is a \linkS4class{SeqExpressionSet}.
+Set to \code{TRUE} if the input matrix is already log-transformed.
 }
 
 }
@@ -65,7 +65,7 @@ Set to \code{TRUE} if the input matrix is already log-transformed. Ignored if \c
 \section{Methods}{
 \describe{
 \item{\code{signature(x = "matrix", cIdx = "ANY", k = "numeric")}}{
-It returns a list with 
+It returns a list with
 \itemize{
 \item
 A samples-by-factors matrix with the estimated factors of unwanted variation (\code{W}).
@@ -77,7 +77,7 @@ original read counts (\code{normalizedCounts}).
 }
 
 \item{\code{signature(x = "SeqExpressionSet", cIdx = "character", k="numeric")}}{
-It returns a \linkS4class{SeqExpressionSet} with 
+It returns a \linkS4class{SeqExpressionSet} with
 \itemize{
 \item
 The normalized counts in the \code{normalizedCounts} slot.
@@ -103,11 +103,11 @@ Note that one can relax the negative control gene assumption by
   requiring instead the identification of a set of positive or negative
   controls, with a priori known expression fold-changes between
   samples. RUVg can then simply be applied to control-centered log counts, as
-  detailed in the vignette. 
+  detailed in the vignette.
 }
 
 \references{
-D. Risso, J. Ngai, T. P. Speed, and S. Dudoit. 
+D. Risso, J. Ngai, T. P. Speed, and S. Dudoit.
 Normalization of RNA-seq data using factor analysis of control genes or samples.
  \emph{Nature Biotechnology}, 2014. (In press).
 
@@ -129,7 +129,7 @@ Davide Risso
 library(zebrafishRNASeq)
 data(zfGenes)
 
-## run on a subset of genes for time reasons 
+## run on a subset of genes for time reasons
 ## (real analyses should be performed on all genes)
 genes <- rownames(zfGenes)[grep("^ENS", rownames(zfGenes))]
 spikes <- rownames(zfGenes)[grep("^ERCC", rownames(zfGenes))]

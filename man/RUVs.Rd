@@ -50,7 +50,7 @@ Tolerance in the selection of the number of positive singular values, i.e., a si
 }
 
 \item{isLog}{
-Set to \code{TRUE} if the input matrix is already log-transformed. Ignored if \code{x} is a \linkS4class{SeqExpressionSet}.
+Set to \code{TRUE} if the input matrix is already log-transformed.
 }
 
 }
@@ -58,7 +58,7 @@ Set to \code{TRUE} if the input matrix is already log-transformed. Ignored if \c
 \section{Methods}{
 \describe{
 \item{\code{signature(x = "matrix", cIdx = "ANY", k = "numeric", scIdx = "matrix")}}{
-It returns a list with 
+It returns a list with
 \itemize{
 \item
 A samples-by-factors matrix with the estimated factors of unwanted variation (\code{W}).
@@ -70,7 +70,7 @@ original read counts (\code{normalizedCounts}).
 }
 
 \item{\code{signature(x = "SeqExpressionSet", cIdx = "character", k="numeric", scIdx = "matrix")}}{
-It returns a \linkS4class{SeqExpressionSet} with 
+It returns a \linkS4class{SeqExpressionSet} with
 \itemize{
 \item
 The normalized counts in the \code{normalizedCounts} slot.
@@ -86,7 +86,7 @@ The estimated factors of unwanted variation as additional columns of the
 The RUVs procedure performs factor analysis on a matrix of count
 differences for replicate/negative control samples, for which the
 biological covariates of interest are constant.
-  
+
 Each row of \code{scIdx} should correspond to a set of replicate
 samples. The number of columns is the size of the largest set of
 replicates; rows for smaller sets are padded with -1 values.
@@ -101,7 +101,7 @@ For example, if the sets of replicate samples are
 }
 
 \references{
-D. Risso, J. Ngai, T. P. Speed, and S. Dudoit. 
+D. Risso, J. Ngai, T. P. Speed, and S. Dudoit.
 Normalization of RNA-seq data using factor analysis of control genes or samples.
  \emph{Nature Biotechnology}, 2014. (In press).
 
@@ -123,7 +123,7 @@ Davide Risso (building on a previous version by Laurent Jacob).
 library(zebrafishRNASeq)
 data(zfGenes)
 
-## run on a subset of genesfor time reasons 
+## run on a subset of genesfor time reasons
 ## (real analyses should be performed on all genes)
 genes <- rownames(zfGenes)[grep("^ENS", rownames(zfGenes))]
 spikes <- rownames(zfGenes)[grep("^ERCC", rownames(zfGenes))]
