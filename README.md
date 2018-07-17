@@ -8,8 +8,8 @@
 This is the developer version of the Bioconductor package [RUVSeq](http://www.bioconductor.org/packages/RUVSeq). Install in R as:
 
 ```r
-source("http://bioconductor.org/biocLite.R")
-biocLite("RUVSeq")
+install.packages("BiocManager")
+BiocManager::install("RUVSeq")
 ```
 ## Status
 
