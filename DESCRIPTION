@@ -1,5 +1,5 @@
 Package: RUVSeq
-Version: 1.17.0
+Version: 1.17.1
 Title: Remove Unwanted Variation from RNA-Seq Data
 Description: This package implements the remove unwanted variation
         (RUV) methods of Risso et al. (2014) for the normalization of
@@ -18,7 +18,7 @@ Suggests: BiocStyle, knitr, RColorBrewer, zebrafishRNASeq, DESeq2
 VignetteBuilder: knitr
 License: Artistic-2.0
 LazyLoad: yes
-biocViews: DifferentialExpression, Preprocessing, RNASeq, Software
+biocViews: ImmunoOncology, DifferentialExpression, Preprocessing, RNASeq, Software
 URL: https://github.com/drisso/RUVSeq
 BugReports: https://github.com/drisso/RUVSeq/issues
 RoxygenNote: 6.0.1
